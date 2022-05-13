@@ -28,7 +28,7 @@ class Driver(object):
 
         from pynput.keyboard import Controller, Listener, Key, KeyCode
         Controller()
-        self.keymap = {Key.up: 'up', 'w': 'up', Key.left: 'left', Key.right: 'right', Key.down: 'down',
+        self.keymap = {Key.up: 'up', Key.left: 'left', Key.right: 'right', Key.down: 'down',
             Key.space: 'space', Key.shift_r: 'gearup', Key.shift_l: 'geardown', Key.alt_l: 'reverse'}
         self.keys = self.keymap.keys()
         self.thread = Listener(on_press=self.press, on_release=self.release)
@@ -72,44 +72,23 @@ class Driver(object):
         gear = self.state.getGear()
         speed = self.state.getSpeedX()
         maxgear = 6
-        # if self.prev_rpm == None:
-        #     up = True
-        # else:
-        #     if (self.prev_rpm - rpm) < 0:
-        #         up = True
-        #     else:
-        #         up = False
-        # if gear == 1 and rpm > 7000:
-        #     gear += 1
-        # if speed + 1 != 0 and gear != 0:
-        #     if rpm > 7000 and (speed + 1 / gear) > 30 and gear < maxgear:
-        #         gear += 1
-            
         if self.forward==True:
-            if rpm > 8000:
+            if rpm > 7700:
                 gear+=1
-            elif rpm <=3000 and speed<60:
+            elif rpm <=3100 and speed<58:
                 gear=1
-            elif gear==2 and rpm<=3000 and speed>=0 and speed<60:
+            elif gear==2 and rpm<=3100 and speed>=0 and speed<58:
                 gear-=1
-            elif gear==3 and rpm<=4980 and speed >=60 and speed<90:
+            elif gear==3 and rpm<=5000 and speed >=58 and speed<92:
                 gear-=1
-            elif gear==4 and rpm<=5108 and speed>=90 and speed <130:
+            elif gear==4 and rpm<=5100 and speed>=92 and speed <127:
                 gear-=1
-            elif gear==5 and rpm<=5300 and speed>=130 and speed <170:
+            elif gear==5 and rpm<=5310 and speed>=127 and speed <175:
                 gear-=1
-            elif gear>=6 and rpm<=5500 :
+            elif gear>=6 and rpm<=5480 :
                 gear-=1
         else:
             gear=-1
-            # if rpm < 3000 and (speed + 1 / gear) < 30 and gear > 1:
-            #     gear -= 1
-
-        # if rpm>8000:
-        #     gear+=1
-
-        # if rpm<3000 and gear>1 and speed<50:
-        #     gear=1
         self.control.setGear(gear)
     
     def speed(self):
@@ -137,19 +116,30 @@ class Driver(object):
 
 
     def press(self, key):
-        if key in self.keymap and (self.keymap[key] == 'up'):
-            self.control.setAccel(1)
-        if key in self.keymap and self.keymap[key] == 'down':
-            self.control.setBrake(1)
-        if key in self.keymap and self.keymap[key] == 'left':
-            self.control.setSteer(self.steer_lock)
-        if key in self.keymap and self.keymap[key] == 'right':
-            self.control.setSteer(-1*self.steer_lock)
+        speed = self.state.getSpeedX()
         if key in self.keymap and self.keymap[key] == 'space':
             self.forward=not self.forward
+        if self.forward == False:
+            if key in self.keymap and (self.keymap[key] == 'up'):
+                self.control.setBrake(1)
+            if key in self.keymap and self.keymap[key] == 'down':
+                self.control.setAccel(1)
+            if key in self.keymap and self.keymap[key] == 'left':
+                self.control.setSteer(self.steer_lock)
+            if key in self.keymap and self.keymap[key] == 'right':
+                self.control.setSteer(-1*self.steer_lock)
+        else:
+            if key in self.keymap and (self.keymap[key] == 'up'):
+                self.control.setAccel(1.1)
+            if key in self.keymap and self.keymap[key] == 'down':
+                self.control.setBrake(1)
+            if key in self.keymap and self.keymap[key] == 'left':
+                self.control.setSteer(self.steer_lock * (speed / 150))
+            if key in self.keymap and self.keymap[key] == 'right':
+                self.control.setSteer(-1*self.steer_lock * (speed / 150))
 
     def release(self, key):
-        if key in self.keymap and  (self.keymap[key] == 'up' or self.keymap[key]=='w'):
+        if key in self.keymap and  (self.keymap[key] == 'up'):
             self.control.setAccel(0)
         if key in self.keymap and self.keymap[key] == 'down':
             self.control.setBrake(0)

@@ -76,7 +76,7 @@ while not shutdownClient:
             print("didn't get response from server...")
 
     currentStep = 0
-
+    count = 0
     while True:
         # wait for an answer from server
         buf = None
@@ -102,21 +102,26 @@ while not shutdownClient:
         currentStep += 1
         if currentStep != arguments.max_steps:
             if buf != None:
-                with open(
-                    'C:\Danyal\Work\FAST\Semester 6\Artificial Intelligence\Project\PythonClient\pyScrcClient-3\src\dataset.csv', 'ab') as file:
-                    print("\n\n\nNon Driver Buff\n\n\n")
-                    x = re.findall(r"\((.*?)\)", buf.decode())
-                    string = ""
-                    for y in x:
-                        string += ",".join(re.findall("\d*\.?\d+", y)) + ","    
-                    print("\n\n\nDriver Buff\n\n\n")
+                if count == 10:
+                    with open(
+                        r'dataset.csv', 'ab') as file:
+                        # print("\n\n\nNon Driver Buff\n\n\n")
+                        x = re.findall(r"\((.*?)\)", buf.decode())
+                        string = ""
+                        for y in x:
+                            string += ",".join(re.findall("\d*\.?\d+", y)) + ","    
+                        # print("\n\n\nDriver Buff\n\n\n")
+                        buf = d.drive(buf.decode())
+                        x = re.findall(r"\((.*?)\)", buf)
+                        for y in x:
+                            string += ",".join(re.findall("\d*\.?\d+", y)) + ","
+                        print(string)
+                        string += "\n"
+                        file.write(string.encode())
+                    count = 0
+                else:
                     buf = d.drive(buf.decode())
-                    x = re.findall(r"\((.*?)\)", buf)
-                    for y in x:
-                        string += ",".join(re.findall("\d*\.?\d+", y)) + ","
-                    print(string)
-                    string += "\n"
-                    file.write(string.encode())
+                    count += 1
         else:
             buf = '(meta 1)'
 
@@ -125,9 +130,10 @@ while not shutdownClient:
 
         if buf != None:
             try:
+                # print("buftype:", type(buf))
                 sock.sendto(
                     buf.encode(), (arguments.host_ip, arguments.host_port))
-                print("\n\nSendbuf\n\n", buf, "\n\n")
+                # print("\n\nSendbuf\n\n", buf, "\n\n")
             except socket.error as msg:
                 print("Failed to send data...Exiting...")
                 sys.exit(-1)
