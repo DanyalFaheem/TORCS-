@@ -109,12 +109,12 @@ while not shutdownClient:
                         x = re.findall(r"\((.*?)\)", buf.decode())
                         string = ""
                         for y in x:
-                            string += ",".join(re.findall("\d*\.?\d+", y)) + ","    
+                            string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","    
                         # print("\n\n\nDriver Buff\n\n\n")
                         buf = d.drive(buf.decode())
                         x = re.findall(r"\((.*?)\)", buf)
                         for y in x:
-                            string += ",".join(re.findall("\d*\.?\d+", y)) + ","
+                            string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","
                         print(string)
                         string += "\n"
                         file.write(string.encode())
