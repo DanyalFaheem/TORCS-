@@ -102,7 +102,6 @@ while not shutdownClient:
         currentStep += 1
         if currentStep != arguments.max_steps:
             if buf != None:
-                if count == 10:
                     with open(
                         r'dataset.csv', 'ab') as file:
                         # print("\n\n\nNon Driver Buff\n\n\n")
@@ -118,10 +117,6 @@ while not shutdownClient:
                         print(string)
                         string += "\n"
                         file.write(string.encode())
-                    count = 0
-                else:
-                    buf = d.drive(buf.decode())
-                    count += 1
         else:
             buf = '(meta 1)'
 

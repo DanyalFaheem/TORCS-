@@ -134,9 +134,9 @@ class Driver(object):
             if key in self.keymap and self.keymap[key] == 'down':
                 self.control.setBrake(1)
             if key in self.keymap and self.keymap[key] == 'left':
-                self.control.setSteer(self.steer_lock * (speed / 150))
+                self.control.setSteer(self.steer_lock)
             if key in self.keymap and self.keymap[key] == 'right':
-                self.control.setSteer(-1*self.steer_lock * (speed / 150))
+                self.control.setSteer(-1*self.steer_lock)
 
     def release(self, key):
         if key in self.keymap and  (self.keymap[key] == 'up'):
