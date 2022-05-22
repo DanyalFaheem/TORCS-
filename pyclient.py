@@ -4,6 +4,7 @@ import socket
 import driver
 import re
 import csv
+from pickle import load, dump# To store model
 
 
 if __name__ == '__main__':
@@ -57,6 +58,10 @@ verbose = False
 d = driver.Driver(arguments.stage)
 
 while not shutdownClient:
+    targets = ['accel', 'gear.1', 'steer', 'clutch', 'brake']
+    models = []
+    for i in range(len(targets)):
+            models.append(load(open(targets[i] + '_model.pkl', 'rb')))
     while True:
         print('Sending id to server: ', arguments.id)
         buf = arguments.id + d.init()
@@ -107,16 +112,19 @@ while not shutdownClient:
                         # print("\n\n\nNon Driver Buff\n\n\n")
                         x = re.findall(r"\((.*?)\)", buf.decode())
                         string = ""
+                        data = []
                         for y in x:
                             string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","    
+                            data.append(re.findall("-?\d*\.?\d+", y))
                         # print("\n\n\nDriver Buff\n\n\n")
-                        buf = d.drive(buf.decode())
+                        print(len(data), data)
+                        buf = d.drive(buf.decode(), models, data)
                         x = re.findall(r"\((.*?)\)", buf)
                         for y in x:
                             string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","
                         print(string)
                         string += "\n"
-                        file.write(string.encode())
+                        # file.write(string.encode())
         else:
             buf = '(meta 1)'
 
