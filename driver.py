@@ -27,13 +27,13 @@ class Driver(object):
         self.prev_rpm = None
 
         from pynput.keyboard import Controller, Listener, Key, KeyCode
-        # Controller()
-        # self.keymap = {Key.up: 'up', Key.left: 'left', Key.right: 'right', Key.down: 'down',
-        #     Key.space: 'space', Key.shift_r: 'gearup', Key.shift_l: 'geardown', Key.alt_l: 'reverse'}
-        # self.keys = self.keymap.keys()
-        # self.thread = Listener(on_press=self.press, on_release=self.release)
-        # self.running = True
-        # self.thread.start()
+        Controller()
+        self.keymap = {Key.up: 'up', Key.left: 'left', Key.right: 'right', Key.down: 'down',
+            Key.space: 'space', Key.shift_r: 'gearup', Key.shift_l: 'geardown', Key.alt_l: 'reverse'}
+        self.keys = self.keymap.keys()
+        self.thread = Listener(on_press=self.press, on_release=self.release)
+        self.running = True
+        self.thread.start()
         # self.thread.join()
 
     def init(self):
@@ -62,11 +62,11 @@ class Driver(object):
         # self.steer()
         #
         self.control.setAccel(models[0].predict(test)[0])
-        self.control.setGear(models[1].predict(test)[0])
+        # self.control.setGear(models[1].predict(test)[0])
         self.control.setSteer(models[2].predict(test)[0])
         self.control.setBrake(models[4].predict(test)[0])
 
-        # self.gear()
+        self.gear()
         #
 
         return self.control.toMsg()
@@ -125,40 +125,40 @@ class Driver(object):
         pass
 
 
-    # def press(self, key):
-    #     speed = self.state.getSpeedX()
-    #     if key in self.keymap and self.keymap[key] == 'space':
-    #         self.forward=not self.forward
-    #     if self.forward == False:
-    #         if key in self.keymap and (self.keymap[key] == 'up'):
-    #             self.control.setBrake(1)
-    #         if key in self.keymap and self.keymap[key] == 'down':
-    #             self.control.setAccel(1)
-    #         if key in self.keymap and self.keymap[key] == 'left':
-    #             self.control.setSteer(self.steer_lock)
-    #         if key in self.keymap and self.keymap[key] == 'right':
-    #             self.control.setSteer(-1*self.steer_lock)
-    #     else:
-    #         if key in self.keymap and (self.keymap[key] == 'up'):
-    #             self.control.setAccel(1.1)
-    #         if key in self.keymap and self.keymap[key] == 'down':
-    #             self.control.setBrake(1)
-    #         if key in self.keymap and self.keymap[key] == 'left':
-    #             self.control.setSteer(self.steer_lock)
-    #         if key in self.keymap and self.keymap[key] == 'right':
-    #             self.control.setSteer(-1*self.steer_lock)
+    def press(self, key):
+        speed = self.state.getSpeedX()
+        if key in self.keymap and self.keymap[key] == 'space':
+            self.forward=not self.forward
+        if self.forward == False:
+            if key in self.keymap and (self.keymap[key] == 'up'):
+                self.control.setBrake(1)
+            if key in self.keymap and self.keymap[key] == 'down':
+                self.control.setAccel(1)
+            if key in self.keymap and self.keymap[key] == 'left':
+                self.control.setSteer(self.steer_lock)
+            if key in self.keymap and self.keymap[key] == 'right':
+                self.control.setSteer(-1*self.steer_lock)
+        else:
+            if key in self.keymap and (self.keymap[key] == 'up'):
+                self.control.setAccel(1.1)
+            if key in self.keymap and self.keymap[key] == 'down':
+                self.control.setBrake(1)
+            if key in self.keymap and self.keymap[key] == 'left':
+                self.control.setSteer(self.steer_lock)
+            if key in self.keymap and self.keymap[key] == 'right':
+                self.control.setSteer(-1*self.steer_lock)
 
-    # def release(self, key):
-    #     if key in self.keymap and  (self.keymap[key] == 'up'):
-    #         self.control.setAccel(0)
-    #     if key in self.keymap and self.keymap[key] == 'down':
-    #         self.control.setBrake(0)
-    #     if key in self.keymap and self.keymap[key] == 'space':
-    #         self.control.setBrake(0)
-    #     if key in self.keymap and self.keymap[key] == 'left':
-    #         self.control.setSteer(0)
-    #     if key in self.keymap and self.keymap[key] == 'right':
-    #         self.control.setSteer(0)
+    def release(self, key):
+        if key in self.keymap and  (self.keymap[key] == 'up'):
+            self.control.setAccel(0)
+        if key in self.keymap and self.keymap[key] == 'down':
+            self.control.setBrake(0)
+        if key in self.keymap and self.keymap[key] == 'space':
+            self.control.setBrake(0)
+        if key in self.keymap and self.keymap[key] == 'left':
+            self.control.setSteer(0)
+        if key in self.keymap and self.keymap[key] == 'right':
+            self.control.setSteer(0)
 
 
 

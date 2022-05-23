@@ -57,7 +57,6 @@ curEpisode = 0
 verbose = False
 
 d = driver.Driver(arguments.stage)
-
 while not shutdownClient:
     targets = ['accel', 'gear.1', 'steer', 'clutch', 'brake']
     models = []
@@ -108,26 +107,24 @@ while not shutdownClient:
         currentStep += 1
         if currentStep != arguments.max_steps:
             if buf != None:
-                    with open(
-                        r'dataset.csv', 'ab') as file:
-                        # print("\n\n\nNon Driver Buff\n\n\n")
-                        x = re.findall(r"\((.*?)\)", buf.decode())
-                        string = ""
-                        data = []
-                        for y in x:
-                            string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","    
-                            data.append(re.findall("-?\d*\.?\d+", y))
-                            # print(len(data), data)
-                        # print("\n\n\nDriver Buff\n\n\n")
-                        data = list(itertools.chain.from_iterable(data))
-                        buf = d.drive(buf.decode(), models, data)
-                        print(buf)
-                        x = re.findall(r"\((.*?)\)", buf)
-                        for y in x:
-                            string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","
-                        # print(string)
-                        string += "\n"
-                        # file.write(string.encode())
+                # print("\n\n\nNon Driver Buff\n\n\n")
+                x = re.findall(r"\((.*?)\)", buf.decode())
+                string = ""
+                data = []
+                for y in x:
+                    string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","    
+                    data.append(re.findall("-?\d*\.?\d+", y))
+                    # print(len(data), data)
+                # print("\n\n\nDriver Buff\n\n\n")
+                data = list(itertools.chain.from_iterable(data))
+                buf = d.drive(buf.decode(), models, data)
+                print(buf)
+                x = re.findall(r"\((.*?)\)", buf)
+                for y in x:
+                    string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","
+                # print(string)
+                string += "\n"
+                # file.write(string.encode())
         else:
             buf = '(meta 1)'
 
