@@ -56,15 +56,15 @@ class Driver(object):
         test = dict()
         for i in range(len(self.features)):
             test[self.features[i]] = data[i]
-        test = pd.DataFrame(test, index=[0])
+        test = DataFrame(test, index=[0])
         # self.speed()
         #
         # self.steer()
         #
-        self.control.setAccel(models[0].predict(test))
-        self.control.setGear(models[1].predict(test))
-        self.control.setSteer(models[2].predict(test))
-        self.control.setBrake(models[4].predict(test))
+        self.control.setAccel(models[0].predict(test)[0])
+        self.control.setGear(models[1].predict(test)[0])
+        self.control.setSteer(models[2].predict(test)[0])
+        self.control.setBrake(models[4].predict(test)[0])
 
         # self.gear()
         #

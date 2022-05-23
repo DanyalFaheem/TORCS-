@@ -5,6 +5,7 @@ import driver
 import re
 import csv
 from pickle import load, dump# To store model
+import itertools
 
 
 if __name__ == '__main__':
@@ -116,13 +117,15 @@ while not shutdownClient:
                         for y in x:
                             string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","    
                             data.append(re.findall("-?\d*\.?\d+", y))
+                            # print(len(data), data)
                         # print("\n\n\nDriver Buff\n\n\n")
-                        print(len(data), data)
+                        data = list(itertools.chain.from_iterable(data))
                         buf = d.drive(buf.decode(), models, data)
+                        print(buf)
                         x = re.findall(r"\((.*?)\)", buf)
                         for y in x:
                             string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","
-                        print(string)
+                        # print(string)
                         string += "\n"
                         # file.write(string.encode())
         else:
