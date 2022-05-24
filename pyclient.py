@@ -58,6 +58,7 @@ verbose = False
 
 d = driver.Driver(arguments.stage)
 while not shutdownClient:
+    # Read our model files here
     targets = ['accel', 'gear.1', 'steer', 'clutch', 'brake']
     models = []
     for i in range(len(targets)):
@@ -108,6 +109,7 @@ while not shutdownClient:
         if currentStep != arguments.max_steps:
             if buf != None:
                 # print("\n\n\nNon Driver Buff\n\n\n")
+                # Get data between brackets and divide into list
                 x = re.findall(r"\((.*?)\)", buf.decode())
                 string = ""
                 data = []
@@ -116,7 +118,13 @@ while not shutdownClient:
                     data.append(re.findall("-?\d*\.?\d+", y))
                     # print(len(data), data)
                 # print("\n\n\nDriver Buff\n\n\n")
+                # Get data to predict through model
                 data = list(itertools.chain.from_iterable(data))
+                #  Delete unnecessary features
+                del data[1:6]
+                del data[38:43]
+                del data[62:74]
+                # Send to driver to get prediction through models
                 buf = d.drive(buf.decode(), models, data)
                 print(buf)
                 x = re.findall(r"\((.*?)\)", buf)
