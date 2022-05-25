@@ -111,10 +111,8 @@ while not shutdownClient:
                 # print("\n\n\nNon Driver Buff\n\n\n")
                 # Get data between brackets and divide into list
                 x = re.findall(r"\((.*?)\)", buf.decode())
-                string = ""
                 data = []
                 for y in x:
-                    string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","    
                     data.append(re.findall("-?\d*\.?\d+", y))
                     # print(len(data), data)
                 # print("\n\n\nDriver Buff\n\n\n")
@@ -126,13 +124,6 @@ while not shutdownClient:
                 del data[62:74]
                 # Send to driver to get prediction through models
                 buf = d.drive(buf.decode(), models, data)
-                print(buf)
-                x = re.findall(r"\((.*?)\)", buf)
-                for y in x:
-                    string += ",".join(re.findall("-?\d*\.?\d+", y)) + ","
-                # print(string)
-                string += "\n"
-                # file.write(string.encode())
         else:
             buf = '(meta 1)'
 
@@ -141,10 +132,8 @@ while not shutdownClient:
 
         if buf != None:
             try:
-                # print("buftype:", type(buf))
                 sock.sendto(
                     buf.encode(), (arguments.host_ip, arguments.host_port))
-                # print("\n\nSendbuf\n\n", buf, "\n\n")
             except socket.error as msg:
                 print("Failed to send data...Exiting...")
                 sys.exit(-1)
